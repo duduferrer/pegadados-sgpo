@@ -1,0 +1,11 @@
+turnos:
+  - M
+  - Rm2
+  - Rm3
+  - T
+  - Rt2
+  - Rt3
+  - P
+  - SM
+  - ST
+planilha_indicativos: INDICATIVOS.csv

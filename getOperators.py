@@ -1,4 +1,5 @@
 import pandas as pd
+from config import CONFIG
 def create_operator_df(df_legenda: pd.DataFrame):
     df_operadores = pd.DataFrame(columns=['grad','nome', 'legenda'])
 
@@ -7,7 +8,7 @@ def create_operator_df(df_legenda: pd.DataFrame):
         df_operadores.loc[idx,['grad', 'nome', 'legenda']] = (row[1][:2], row[1][3:], row[0])
 
     # ADICIONA INDICATIVO LPNA
-    df_indicativo = pd.read_csv('INDICATIVOS.csv', sep=',')
+    df_indicativo = pd.read_csv(CONFIG["planilha_indicativos"], sep=',')
     df_operadores['nome'] = df_operadores['nome'].str.strip()
     df_indicativo['NOME'] = df_indicativo['NOME'].str.strip()
     df_indicativo['INDICATIVO'] = df_indicativo['INDICATIVO'].str.strip()
