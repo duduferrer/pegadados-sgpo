@@ -14,7 +14,7 @@ Nenhum. O script é distribuído como executável `.exe` e não requer instalaç
 
 ```
 ├── Script-Escala.exe
-├── config.yaml
+├── configs.yaml
 ├── INDICATIVOS.csv
 └── app.log           ← gerado automaticamente
 ```
@@ -23,7 +23,7 @@ Nenhum. O script é distribuído como executável `.exe` e não requer instalaç
 
 ## Configuração
 
-### `config.yaml`
+### `configs.yaml`
 
 Define os turnos operacionais. Os nomes devem corresponder exatamente aos identificadores usados na coluna de turno da escala PDF.
 
@@ -32,9 +32,11 @@ turnos:
   - M
   - T
   - P
+planilha_indicativos: INDICATIVOS.csv
 ```
 
 > Adicione ou remova turnos conforme a necessidade do órgão.
+> Se precisar mudar o nome do arquivo de indicativos, mude aqui também.
 
 ---
 
@@ -58,7 +60,7 @@ Arquivo CSV obrigatório contendo o cadastro dos operadores. Deve conter exatame
 4. Aguarde o processamento — o CSV será gerado na mesma pasta com o nome no formato:
 
 ```
-saida_YYYYMMDD_HHMMSS.csv
+escala_dd-mm-yyyy_HH-MM.csv
 ```
 
 ---
