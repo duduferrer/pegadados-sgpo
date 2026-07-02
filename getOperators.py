@@ -5,7 +5,10 @@ def create_operator_df(df_legenda: pd.DataFrame):
 
     # COLOCA OS DADOS DE OPERADORES E LEGENDA NO DATAFRAME df_operadores
     for idx, row in df_legenda.iterrows():
-        df_operadores.loc[idx,['grad', 'nome', 'legenda']] = (row[1][:2], row[1][3:], row[0])
+        i=1
+        while(row[i]==''):
+            i+=1
+        df_operadores.loc[idx,['grad', 'nome', 'legenda']] = (row[i][:2], row[i][3:], row[0])
 
     # ADICIONA INDICATIVO LPNA
     df_indicativo = pd.read_csv(CONFIG["planilha_indicativos"], sep=',')
