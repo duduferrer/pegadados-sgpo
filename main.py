@@ -21,7 +21,7 @@ def loading_bar(mensagem: str, stop_event: threading.Event):
         sys.stdout.flush()
         time.sleep(0.1)
         i += 1
-    sys.stdout.write(f"\r✓ {mensagem} concluído!    \n")
+    sys.stdout.write(f"\r✓ {mensagem} OK!    \n")
     sys.stdout.flush()
 
 def com_loading(mensagem: str, func, *args, **kwargs):
@@ -46,10 +46,15 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 def main():
+    try:
+        import pyi_splash
+        pyi_splash.close()
+    except ImportError:
+        pass
     stop_event = threading.Event()
     t = threading.Thread(target=loading_bar, args=("Inicializando", stop_event))
     t.start()
-
+    
     root = tk.Tk()
     root.withdraw()
 
