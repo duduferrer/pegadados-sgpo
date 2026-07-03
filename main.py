@@ -9,6 +9,31 @@ import tkinter as tk
 from tkinter import filedialog
 import logging
 import traceback
+import threading
+import time
+import sys
+
+def loading_bar(mensagem: str, stop_event: threading.Event):
+    chars = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
+    i = 0
+    while not stop_event.is_set():
+        sys.stdout.write(f"\r{chars[i % len(chars)]} {mensagem}...")
+        sys.stdout.flush()
+        time.sleep(0.1)
+        i += 1
+    sys.stdout.write(f"\r✓ {mensagem} concluído!    \n")
+    sys.stdout.flush()
+
+def com_loading(mensagem: str, func, *args, **kwargs):
+    stop_event = threading.Event()
+    t = threading.Thread(target=loading_bar, args=(mensagem, stop_event))
+    t.start()
+    try:
+        resultado = func(*args, **kwargs)
+    finally:
+        stop_event.set()
+        t.join()
+    return resultado
 
 MESES = {
     "JANEIRO": 1, "FEVEREIRO": 2, "MARÇO": 3, "ABRIL": 4,
@@ -20,25 +45,34 @@ logging.basicConfig(
     level=logging.WARNING,
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
-
 def main():
+    stop_event = threading.Event()
+    t = threading.Thread(target=loading_bar, args=("Inicializando", stop_event))
+    t.start()
+
     root = tk.Tk()
     root.withdraw()
+
+    stop_event.set()
+    t.join()
 
     arquivos = filedialog.askopenfilenames(filetypes=[("PDF files", "*.pdf")])
 
     dfs = []
     for arquivo in arquivos:
+        nome = arquivo.split("/")[-1]
         try:
-            df = processar_escala(arquivo)
+            df = com_loading(f"Processando {nome}", processar_escala, arquivo)
             dfs.append(df)
         except Exception as e:
             logging.error(traceback.format_exc())
-
+            print(f"\n✗ Erro ao processar {nome}")
 
     df_final = pd.concat(dfs, ignore_index=True)
     now = datetime.now().strftime("%d-%m-%Y_%H-%M")
-    df_final.to_csv(''.join(["escala_", now, '.csv']), index=False, encoding="utf-8-sig")
+    nome_csv = f"escala_{now}.csv"
+    com_loading("Salvando CSV", df_final.to_csv, nome_csv, index=False, encoding="utf-8-sig")
+    print(f"Arquivo gerado: {nome_csv}")
 
 def processar_escala(arquivo: str):
     df_escala, df_legenda, meta = create_dfs(arquivo)
